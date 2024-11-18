@@ -15,10 +15,10 @@ By default, mTLS uses Client Certificates issued by a Cloudflare Managed CA. Clo
 
 ## 1. Enable mTLS
 
-1. Go to your Cloudflare dashboard and selecting your account.
+1. Go to your Cloudflare dashboard and select your account.
 2. Select **SSL/TLS** > **[Client Certificates](/ssl/client-certificates/)** tab and add the Hosts (hostnames) you want to [enable mTLS](/ssl/client-certificates/enable-mtls/) for. 
 
-    `Example host: [mtls-test.example.com](https://mtls-test.example.com/)`
+    Example host: `mtls-test.example.com`
 
 3. Select **Create Certificate** to generate the private key (usually referred to as Private Certificate) and Certificate Signing Request (CSR) with Cloudflare (which includes the Public Certificate), or use your own private key and CSR. Using your own allows you to also [label client certificates](/ssl/client-certificates/label-client-certificate/).
 
@@ -29,6 +29,8 @@ openssl req -new -newkey rsa:2048 -nodes -keyout client1.key -out client1.csr -s
 ```
 
 Or use a script like this one from [GitHub](https://github.com/erfianugrah/rootcatest/blob/main/fullgenerator.py).
+
+Do not forget to copy the values shown when creating the certificate as they become unavailable after creation.
 
 ## 2. Install the client certificate
 
@@ -44,11 +46,15 @@ Another example is to generate a [PKCS12 (P12) certificate](https://en.wikipedia
 openssl pkcs12 -export -out certificate.p12 -inkey private-cert.pem -in cert.pem
 ```
 
+Use the values from the previous step.
+
 Example using cURL command:
 
 ```cURL
 curl -v --cert cert.pem --key private-cert.pem <HOSTNAME>
 ```
+
+Use the values from the previous step.
 
 ## 3. Validate the client certificate in the WAF
 
