@@ -58,10 +58,10 @@ The `get()` method returns a promise you can `await` on to get the value. If the
 - `type`: `"text" | "json" | "arrayBuffer" | "stream"`
   - Optional. The type of the value to be returned. `text` is the default.
 - `options`: `{
-    cacheTtl: number,
+    cacheTtl?: number,
     type: "text" | "json" | "arrayBuffer" | "stream"
 }`
-  - Optional. Object containing the `cacheTtl` and `type` properties. The `cacheTtl` property defines the length of time in seconds that a KV result is cached in the global network location it is accessed from (minimum: 60). The `type` property defines the type of the value to be returned.
+  - Optional. Object containing the `cacheTtl` and `type` properties. The optional `cacheTtl` property defines the length of time in seconds that a KV result is cached in the global network location it is accessed from (minimum: 60). The `type` property defines the type of the value to be returned.
 
 #### Response
 
@@ -91,10 +91,10 @@ Metadata is a serializable value you append to each KV entry.
 - `type`: `"text" | "json" | "arrayBuffer" | "stream"`
   - Optional. The type of the value to be returned. `text` is the default.
 - `options`: `{
-    cacheTtl: number,
+    cacheTtl?: number,
     type: "text" | "json" | "arrayBuffer" | "stream"
 }`
-  - Optional. Object containing the `cacheTtl` and `type` properties. The `cacheTtl` property defines the length of time in seconds that a KV result is cached in the global network location it is accessed from (minimum: 60). The `type` property defines the type of the value to be returned.
+  - Optional. Object containing the `cacheTtl` and `type` properties. The optional `cacheTtl` property defines the length of time in seconds that a KV result is cached in the global network location it is accessed from (minimum: 60). The `type` property defines the type of the value to be returned.
 
 #### Response
 
