@@ -1,5 +1,5 @@
 ---
-title: Storage API
+title: Durable Object Storage
 pcx_content_type: concept
 sidebar:
   order: 4
@@ -243,76 +243,6 @@ The `put()` method returns a `Promise`, but most applications can discard this p
 
 * `setAlarm()` and `deleteAlarm()` support the same options as [`put()`](/durable-objects/api/storage-api/#put), but without `noCache`.
 
-### sql.exec
-
-:::note[SQLite in Durable Objects Beta]
-
-SQL API methods accessed with `ctx.storage.sql` are only allowed on [Durable Object classes with SQLite storage backend](/durable-objects/reference/durable-objects-migrations/#enable-sqlite-storage-backend-on-new-durable-object-class-migration) and will return an error if called on Durable Object classes with a key-value storage backend.
-
-:::
-
-<code>ctx.storage.sql.exec(query: <Type text='string'/>, ...bindings: <Type text='any[]'/>)</code>: <Type text='SqlStorageCursor' />
-
-#### Parameters
-* `query`: <Type text ='string' />
-  * The SQL query string to be executed. `query` can contain `?` placeholders for parameter bindings. Multiple SQL statements, separated with a semicolon, can be executed in the `query`. With multiple SQL statements, any parameter bindings are applied to the last SQL statement in the `query`, and the returned cursor is only for the last SQL statement.
-* `bindings`: <Type text='any[]' /> <MetaInfo text='Optional' />
-  * Optional variable number of arguments that correspond to the `?` placeholders in `query`.
-
-#### Returns
-A cursor (`SqlStorageCursor`) to iterate over query row results as objects. `SqlStorageCursor` is a JavaScript [Iterable](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols#the_iterable_protocol), which supports iteration using `for (let row of cursor)`. `SqlStorageCursor` is also a JavaScript [Iterator](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols#the_iterator_protocol), which supports iteration using `cursor.next()`.
-
-`SqlStorageCursor` supports the following methods:
-
-* `next()`
-  * Returns an object representing the next value of the cursor. The returned object has  `done` and `value` properties adhering to the JavaScript [Iterator](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols#the_iterator_protocol). `done` is set to `false` when a next value is present, and `value` is set to the next row object in the query result. `done` is set to `true` when the entire cursor is consumed, and no `value` is set.
-* `toArray()`
-  * Iterates through remaining cursor value(s) and returns an array of returned row objects.
-* `one()`
-  * Returns a row object if query result has exactly one row. If query result has zero rows or more than one row, `one()` throws an exception.
-* `raw()`: <Type text='Iterator' />
-  * Returns an Iterator over the same query results, with each row as an array of column values (with no column names) rather than an object.
-  * Returned Iterator supports `next()`, `toArray()`, and `one()` methods above.
-  * Returned cursor and `raw()` iterator iterate over the same query results and can be combined. For example:
-
-```ts
-  let cursor = this.sql.exec("SELECT * FROM artist ORDER BY artistname ASC;");
-  let rawResult = cursor.raw().next();
-
-  if (!rawResult.done) {
-    console.log(rawResult.value); // prints [ 123, 'Alice' ]
-  } else {
-    // query returned zero results
-  }
-
-  console.log(cursor.toArray()); // prints [{ artistid: 456, artistname: 'Bob' },{ artistid: 789, artistname: 'Charlie' }]
-```
-`SqlStorageCursor` had the following properties:
-
-* `columnNames`: <Type text='string[]' />
-  * The column names of the query in the order they appear in each row array returned by the `raw` iterator.
-*  `rowsRead`: <Type text='number' />
-  * The number of rows read so far as part of this SQL `query`. This may increase as you iterate the cursor. The final value is used for [SQL billing](/durable-objects/platform/pricing/#sqlite-storage-backend).
-*  `rowsWritten`: <Type text='number' />
-  * The number of rows written so far as part of this SQL `query`. This may increase as you iterate the cursor. The final value is used for [SQL billing](/durable-objects/platform/pricing/#sqlite-storage-backend).
-
-Note that `sql.exec()` cannot execute transaction-related statements like `BEGIN TRANSACTION` or `SAVEPOINT`. Instead, use the [`ctx.storage.transaction()`](#transaction) or [`ctx.storage.transactionSync()`](#transactionsync) APIs to start a transaction, and then execute SQL queries in your callback.
-
-#### Examples
-
-<Render file="durable-objects-sql" />
-
-### sql.databaseSize
-
-`ctx.storage.sql.databaseSize`: <Type text ='number' />
-
-#### Returns
-The current SQLite database size in bytes.
-
-```ts
-  let size = ctx.storage.sql.databaseSize;
-```
-
 ### Point in time recovery
 
 For [Durable Objects classes with SQL storage](/durable-objects/reference/durable-objects-migrations/#enable-sqlite-storage-backend-on-new-durable-object-class-migration), the following point-in-time-recovery (PITR) API methods are available to restore a Durable Object's embedded SQLite database to any point in time in the past 30 days. These methods apply to the entire SQLite database contents, including both the object's stored SQL data and stored key-value data using the key-value `put()` API. The PITR API is not supported in local development because a durable log of data changes is not stored locally.
@@ -340,6 +270,12 @@ The PITR API represents points in times using "bookmarks". A bookmark is a mostl
   let bookmark = ctx.storage.getBookmarkForTime(now - 2);
   ctx.storage.onNextSessionRestoreBookmark(bookmark);
 ```
+
+### sql
+
+<code>ctx.storage.sql.METHOD</code>: <Type text="SqlStorage"/>
+
+- Allows you to access the `SqlStorage` methods.
 
 ### Related resources
 
