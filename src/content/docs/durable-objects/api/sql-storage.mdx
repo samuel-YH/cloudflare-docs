@@ -8,7 +8,7 @@ sidebar:
 
 import { Render, Type, MetaInfo, GlossaryTooltip } from "~/components";
 
-The `SqlStorage` interface encapsulates methods that modify the SQLite database embedded within a Durable Object.
+The `SqlStorage` interface encapsulates methods that modify the SQLite database embedded within a Durable Object. The `SqlStorage` interface is accessible via the `sql` property of `DurableObjectStorage` class.
 
 For example, using `sql.exec()`, a user can create a table, then insert rows into the table.
 
@@ -33,11 +33,11 @@ export class MyDurableObject extends DurableObject {
 }
 ```
 
-The `SqlStorage` interface is accessible via the `sql` property of `DurableObjectStorage` class.
-
 :::note[SQLite in Durable Objects Beta]
 SQL API methods accessed with `ctx.storage.sql` are only allowed on [Durable Object classes with SQLite storage backend](/durable-objects/reference/durable-objects-migrations/#enable-sqlite-storage-backend-on-new-durable-object-class-migration) and will return an error if called on Durable Object classes with a key-value storage backend.
 :::
+
+Specifically for Durable Object classes with SQLite storage backend, KV operations ([`get`](/durable-objects/api/storage-api/#get), [`put`](/durable-objects/api/storage-api/#put), [`delete`](/durable-objects/api/storage-api/#delete), [`deleteAll`](/durable-objects/api/storage-api/#deleteall), [`list`](/durable-objects/api/storage-api/#list)) are synchronous, even though they return promises. These methods will have completed their operations before they return the promise.
 
 ## Methods
 
