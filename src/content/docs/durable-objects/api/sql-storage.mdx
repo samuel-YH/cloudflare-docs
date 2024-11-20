@@ -16,7 +16,7 @@ SQL API methods accessed with `ctx.storage.sql` are only allowed on [Durable Obj
 
 ### exec
 
-<code>ctx.storage.sql.exec(query: <Type text='string'/>, ...bindings: <Type text='any[]'/>)</code>: <Type text='SqlStorageCursor' />
+<code>exec(query: <Type text='string'/>, ...bindings: <Type text='any[]'/>)</code>: <Type text='SqlStorageCursor' />
 
 #### Parameters
 
@@ -71,7 +71,7 @@ Note that `sql.exec()` cannot execute transaction-related statements like `BEGIN
 
 ### databaseSize
 
-`ctx.storage.sql.databaseSize`: <Type text ='number' />
+`databaseSize`: <Type text ='number' />
 
 #### Returns
 The current SQLite database size in bytes.
