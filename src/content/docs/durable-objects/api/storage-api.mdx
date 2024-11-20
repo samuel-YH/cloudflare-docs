@@ -54,7 +54,7 @@ The Durable Object Storage API comes with several methods, including key-value (
 
 Each method is implicitly wrapped inside a transaction, such that its results are atomic and isolated from all other storage operations, even when accessing multiple key-value pairs.
 
-### get
+### `get`
 
 * <code>get(key <Type text='string' />, options <Type text='Object' /> <MetaInfo text='optional' />)</code>: <Type text='Promise<any>' />
 
@@ -74,7 +74,7 @@ Each method is implicitly wrapped inside a transaction, such that its results ar
 
   * If true, then the key/value will not be inserted into the in-memory cache. If the key is already in the cache, the cached value will be returned, but its last-used time will not be updated. Use this when you expect this key will not be used again in the near future. This flag is only a hint. This flag will never change the semantics of your code, but it may affect performance.
 
-### put
+### `put`
 
 * <code>put(key <Type text='string' />, value <Type text='any' />, options <Type text='Object' /> <MetaInfo text='optional' />)</code>: <Type text='Promise' />
 
@@ -86,7 +86,7 @@ Each method is implicitly wrapped inside a transaction, such that its results ar
   * Each value can be any type supported by the [structured clone algorithm](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Structured_clone_algorithm), which is true of most types.
   * Supports up to 128 key-value pairs at a time. Each key is limited to a maximum size of 2,048 bytes and each value is limited to 128 KiB (131,072 bytes).
 
-### delete
+### `delete`
 
 * <code>delete(key <Type text='string' />, options <Type text='Object' /> <MetaInfo text='optional' />)</code>: <Type text='Promise<boolean>' />
 
@@ -96,7 +96,7 @@ Each method is implicitly wrapped inside a transaction, such that its results ar
 
   * Deletes the provided keys and their associated values. Supports up to 128 keys at a time. Returns a count of the number of key-value pairs deleted.
 
-### deleteAll
+### `deleteAll`
 
 * <code>deleteAll(options <Type text='Object' /> <MetaInfo text='optional' />)</code>: <Type text='Promise' />
 
@@ -136,7 +136,7 @@ If you invoke `put()` (or `delete()`) multiple times without performing any `awa
 The `put()` method returns a `Promise`, but most applications can discard this promise without using `await`. The `Promise` usually completes immediately, because `put()` writes to an in-memory write buffer that is flushed to disk asynchronously. However, if an application performs a large number of `put()` without waiting for any I/O, the write buffer could theoretically grow large enough to cause the isolate to exceed its 128 MB memory limit. To avoid this scenario, such applications should use `await` on the `Promise` returned by `put()`. The system will then apply backpressure onto the application, slowing it down so that the write buffer has time to flush. Using `await` will disable automatic write coalescing.
 :::
 
-### list
+### `list`
 
 * <code>list(options <Type text='Object' /> <MetaInfo text='optional' />)</code>: <Type text= 'Promise<Map<string, any>>' />
 
@@ -181,7 +181,7 @@ The `put()` method returns a `Promise`, but most applications can discard this p
 
   * Same as the option to `get()`, above.
 
-### transaction
+### `transaction`
 
 * `transaction(closureFunction(txn))`: <Type text='Promise' />
 
@@ -195,7 +195,7 @@ The `put()` method returns a `Promise`, but most applications can discard this p
 
   * When using [the SQLite-backed storage engine](/durable-objects/best-practices/access-durable-objects-storage/#sqlite-storage-backend), the `txn` object is obsolete. Any storage operations performed directly on the `ctx.storage` object, including SQL queries using [`ctx.storage.sql.exec()`](#sqlexec), will be considered part of the transaction.
 
-### transactionSync
+### `transactionSync`
 
 * `transactionSync(callback)`: <Type text='any' />
 
@@ -207,7 +207,7 @@ The `put()` method returns a `Promise`, but most applications can discard this p
 
   * The callback must complete synchronously, that is, it should not be declared `async` nor otherwise return a Promise. Only synchronous storage operations can be part of the transaction. This is intended for use with SQL queries using [`ctx.storage.sql.exec()`](#sqlexec), which complete sychronously.
 
-### sync
+### `sync`
 
 * `sync()` : <Type text='Promise' />
 
@@ -215,7 +215,7 @@ The `put()` method returns a `Promise`, but most applications can discard this p
 
   * This is similar to normal behavior from automatic write coalescing. If there are any pending writes in the write buffer (including those submitted with [the `allowUnconfirmed` option](/durable-objects/api/storage-api/#supported-options-1)), the returned promise will resolve when they complete. If there are no pending writes, the returned promise will be already resolved.
 
-### getAlarm
+### `getAlarm`
 
 * <code>getAlarm(options <Type text='Object' /> <MetaInfo text='optional' />)</code>: <Type text='Promise<Number | null>' />
 
@@ -225,7 +225,7 @@ The `put()` method returns a `Promise`, but most applications can discard this p
 
 * Same options as [`get()`](/durable-objects/api/storage-api/#get), but without `noCache`.
 
-### setAlarm
+### `setAlarm`
 
 * <code>setAlarm(scheduledTime <Type text='Date | number' />, options <Type text='Object' /> <MetaInfo text='optional' />)</code>: <Type text='Promise' />
 
@@ -243,13 +243,13 @@ The `put()` method returns a `Promise`, but most applications can discard this p
 
 * `setAlarm()` and `deleteAlarm()` support the same options as [`put()`](/durable-objects/api/storage-api/#put), but without `noCache`.
 
-### sql
+## Properties
 
-<code>ctx.storage.sql.METHOD</code>: <Type text="SqlStorage"/>
+### `sql`
 
-- Allows you to access the `SqlStorage` methods.
+`sql` is a readonly property of type `DurableObjectStorage` encapsulating the [SQL API](/durable-objects/api/sql-storage).
 
-### Related resources
+## Related resources
 
 * [Durable Objects: Easy, Fast, Correct – Choose Three](https://blog.cloudflare.com/durable-objects-easy-fast-correct-choose-three/).
 * [WebSockets API](/durable-objects/api/websockets/).

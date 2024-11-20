@@ -8,6 +8,33 @@ sidebar:
 
 import { Render, Type, MetaInfo, GlossaryTooltip } from "~/components";
 
+The `SqlStorage` interface encapsulates methods that modify the SQLite database embedded within a Durable Object.
+
+For example, using `sql.exec()`, a user can create a table, then insert rows into the table.
+
+```js
+import { DurableObject } from "cloudflare:workers";
+
+export class MyDurableObject extends DurableObject {
+  sql: SqlStorage
+  constructor(ctx: DurableObjectState, env: Env) {
+    super(ctx, env);
+    this.sql = ctx.storage.sql;
+
+    this.sql.exec(`CREATE TABLE IF NOT EXISTS artist(
+      artistid    INTEGER PRIMARY KEY,
+      artistname  TEXT
+    );INSERT INTO artist (artistid, artistname) VALUES
+      (123, 'Alice'),
+      (456, 'Bob'),
+      (789, 'Charlie');`
+    );
+  }
+}
+```
+
+The `SqlStorage` interface is accessible via the `sql` property of `DurableObjectStorage` class.
+
 :::note[SQLite in Durable Objects Beta]
 SQL API methods accessed with `ctx.storage.sql` are only allowed on [Durable Object classes with SQLite storage backend](/durable-objects/reference/durable-objects-migrations/#enable-sqlite-storage-backend-on-new-durable-object-class-migration) and will return an error if called on Durable Object classes with a key-value storage backend.
 :::
