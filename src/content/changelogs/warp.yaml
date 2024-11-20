@@ -11,7 +11,7 @@ entries:
       MASQUE as a device tunnel protocol option is now generally available (GA). Refer to [Device tunnel protocol](/cloudflare-one/connections/connect-devices/warp/configure-warp/warp-settings/#device-tunnel-protocol) for configuration details and minimum WARP client requirements.
 
   - publish_date: "2024-11-18"
-   title: WARP client for macOS (version 2024.11.309.0)
+    title: WARP client for macOS (version 2024.11.309.0)
     description: |-
       A new GA release for the macOS WARP client is now available in the [App Center](https://install.appcenter.ms/orgs/cloudflare/apps/1.1.1.1-macos-1/distribution_groups/release). This release contains minor fixes and improvements.
 
